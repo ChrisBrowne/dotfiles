@@ -1,15 +1,15 @@
 function season() {
   DOY=$(date +%j)
   if [[ $DOY -lt 79 ]]; then
-    echo "❄️"
+    echo "⛄"
   elif [[ $DOY -lt 172 ]]; then
-    echo "Sp"
+    echo "🌱"
   elif [[ $DOY -lt 265 ]]; then
-    echo "Su"
+    echo "🌞"
   elif [[ $DOY -lt 356 ]]; then
-    echo "A"
+    echo "🍂"
   else
-    echo "❄️"
+    echo "⛄"
   fi
 }
 
