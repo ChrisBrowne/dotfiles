@@ -91,3 +91,5 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 . "$HOME/.cargo/env"
 source /usr/share/doc/fzf/examples/key-bindings.zsh
+
+alias nv='/usr/local/bin/nvim -u ~/dotfiles/nvim_new/init.lua'
