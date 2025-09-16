@@ -92,4 +92,4 @@ export NVM_DIR="$HOME/.nvm"
 . "$HOME/.cargo/env"
 source /usr/share/doc/fzf/examples/key-bindings.zsh
 
-alias nv='/usr/local/bin/nvim -u ~/dotfiles/nvim_new/init.lua'
+alias nv='NVIM_APPNAME=nvim_new /usr/local/bin/nvim'
