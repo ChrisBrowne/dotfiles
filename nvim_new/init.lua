@@ -181,6 +181,8 @@ vim.lsp.enable({
   "ts_ls",
   "copilot",
   "tailwindcss",
+  "rust_analyzer",
+  "gopls",
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {
