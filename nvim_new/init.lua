@@ -24,6 +24,7 @@ vim.opt.cursorline = true
 vim.opt.scrolloff = 10
 
 vim.opt.winborder = "rounded"
+vim.opt.spelllang = "en_gb"
 
 vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldtext = "v:lua.vim.treesitter.foldtext()"
@@ -40,6 +41,18 @@ vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 vim.keymap.set("n", "<leader>pu", "<cmd>lua vim.pack.update()<CR>")
 vim.keymap.set("n", "<leader>e", "<cmd>lua vim.diagnostic.open_float()<CR>")
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+
+-- [[ LSP Keymaps ]]
+-- https://neovim.io/doc/user/lsp.html#_global-defaults
+-- "gra" is mapped in Normal and Visual mode to vim.lsp.buf.code_action()
+-- "gri" is mapped in Normal mode to vim.lsp.buf.implementation()
+-- "grn" is mapped in Normal mode to vim.lsp.buf.rename()
+-- "grr" is mapped in Normal mode to vim.lsp.buf.references()
+-- "grt" is mapped in Normal mode to vim.lsp.buf.type_definition()
+-- "gO" is mapped in Normal mode to vim.lsp.buf.document_symbol()
+-- CTRL-S is mapped in Insert mode to vim.lsp.buf.signature_help()
+-- "an" and "in" are mapped in Visual mode to outer and inner incremental selections
+vim.keymap.set("n", "grd", vim.lsp.buf.definition, bufopts)
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -78,9 +91,13 @@ vim.pack.add({ { src = "https://github.com/ibhagwan/fzf-lua" } })
 local fzflua = require("fzf-lua")
 fzflua.register_ui_select()
 fzflua.setup({
-  actions = {
-    files = {
-      true,
+  spell_suggest = {
+    actions = {
+      ["ctrl-y"] = fzflua.actions.complete,
+    },
+  },
+  files = {
+    actions = {
       ["ctrl-y"] = fzflua.actions.file_edit_or_qf,
     },
   },
@@ -89,6 +106,7 @@ vim.keymap.set("n", "<leader>sf", "<cmd>FzfLua files<CR>", { desc = "[S]earch [F
 vim.keymap.set("n", "<leader>sg", "<cmd>FzfLua live_grep<CR>", { desc = "[S]earch [G]rep" })
 vim.keymap.set("n", "<leader>gf", "<cmd>FzfLua files<CR>", { desc = "[G]it [F]iles" })
 vim.keymap.set("n", "<leader>sr", "<cmd>FzfLua resume<CR>", { desc = "[S]earch [R]esume" })
+vim.keymap.set("n", "<leader>ss", "<cmd>FzfLua spell_suggest<CR>", { desc = "[S]pell [S]uggest" })
 vim.keymap.set("n", "<leader><space>", "<cmd>FzfLua buffers<CR>", { desc = "Show buffers" })
 vim.keymap.set("n", "<leader>/", "<cmd>FzfLua blines<CR>", { desc = "Fuzzy find in buffer" })
 
@@ -115,6 +133,7 @@ vim.pack.add({ { src = "https://github.com/stevearc/conform.nvim" } })
 require("conform").setup({
   formatters_by_ft = {
     lua = { "stylua" },
+    go = { "gofmt" },
     rust = { "rustfmt", lsp_format = "fallback" },
     -- Conform will run the first available formatter
     javascript = { "prettierd", "prettier", stop_after_first = true },
@@ -190,19 +209,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(ev)
     local client = assert(vim.lsp.get_client_by_id(ev.data.client_id))
     local bufopts = { noremap = true, silent = true, buffer = ev.buf }
-    vim.keymap.set("i", "<C-k>", vim.lsp.completion.get, bufopts) -- open completion menu manually
-    -- vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
-    -- vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, bufopts)
-    -- vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, bufopts)
+    -- vim.keymap.set("i", "<C-k>", vim.lsp.completion.get, bufopts) -- open completion menu manually
 
-    local methods = vim.lsp.protocol.Methods
     -- https://github.com/neovim/neovim/blob/b2828af5b5aba044cd40594a519d2d9f5dbb69cb/runtime/lua/vim/lsp/protocol.lua?plain=1#L858
-    if client:supports_method(methods.textDocument_completion) then
+    if client:supports_method(vim.lsp.protocol.Methods.textDocument_completion) then
       -- print("this client supports text completion")
       -- vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
     end
 
-    if client:supports_method(methods.textDocument_inlineCompletion) then
+    if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlineCompletion) then
       -- print("this client supports inline text completion")
       vim.lsp.inline_completion.enable(true)
 
