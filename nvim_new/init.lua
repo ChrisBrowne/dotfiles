@@ -1,12 +1,8 @@
-print("hello world")
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-
 vim.opt.termguicolors = true
--- vim.g.have_nerd_font = false
 vim.opt.number = true
 vim.opt.relativenumber = true
-
 vim.opt.mouse = "a"
 vim.opt.breakindent = true
 vim.opt.undofile = true
@@ -15,17 +11,14 @@ vim.opt.smartcase = true
 vim.opt.signcolumn = "yes"
 vim.opt.updatetime = 250
 vim.opt.tabstop = 4
-
 vim.opt.timeoutlen = 300
 vim.opt.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.opt.inccommand = "split"
 vim.opt.cursorline = true
 vim.opt.scrolloff = 10
-
 vim.opt.winborder = "rounded"
 vim.opt.spelllang = "en_gb"
-
 vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldtext = "v:lua.vim.treesitter.foldtext()"
 
@@ -54,8 +47,20 @@ vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" }
 -- "an" and "in" are mapped in Visual mode to outer and inner incremental selections
 vim.keymap.set("n", "grd", vim.lsp.buf.definition, bufopts)
 
--- [[ Basic Autocommands ]]
---  See `:help lua-guide-autocommands`
+vim.keymap.set("n", "<leader>sf", "<cmd>FzfLua files<CR>", { desc = "[S]earch [F]iles" })
+vim.keymap.set("n", "<leader>sg", "<cmd>FzfLua live_grep<CR>", { desc = "[S]earch [G]rep" })
+vim.keymap.set("n", "<leader>gf", "<cmd>FzfLua files<CR>", { desc = "[G]it [F]iles" })
+vim.keymap.set("n", "<leader>sr", "<cmd>FzfLua resume<CR>", { desc = "[S]earch [R]esume" })
+vim.keymap.set("n", "<leader>ss", "<cmd>FzfLua spell_suggest<CR>", { desc = "[S]pell [S]uggest" })
+vim.keymap.set("n", "<leader><space>", "<cmd>FzfLua buffers<CR>", { desc = "Show buffers" })
+vim.keymap.set("n", "<leader>/", "<cmd>FzfLua blines<CR>", { desc = "Fuzzy find in buffer" })
+vim.keymap.set("i", "<Tab>", function()
+  if not vim.lsp.inline_completion.get() then
+    return "<Tab>"
+  end
+end)
+vim.keymap.set({ "n", "t" }, "<C-z>", "<cmd>TerminalToggle<CR>", { desc = "Terminal toggle" })
+
 local augroup = vim.api.nvim_create_augroup("chris.cfg", { clear = true })
 vim.api.nvim_create_autocmd("TextYankPost", {
   desc = "Highlight when yanking (copying) text",
@@ -65,102 +70,21 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   end,
 })
 
--- [[ Packages ]]
-vim.pack.add({ { src = "https://github.com/folke/tokyonight.nvim" } })
-require("tokyonight").setup({
-  transparent = true,
-  styles = {
-    sidebars = "transparent",
-    floats = "transparent",
-  },
-})
-vim.cmd.colorscheme("tokyonight-night")
-
-vim.pack.add({ { src = "https://github.com/tpope/vim-fugitive" } })
-vim.pack.add({ { src = "https://github.com/tpope/vim-vinegar" } })
-vim.pack.add({ { src = "https://github.com/tpope/vim-unimpaired" } })
-vim.pack.add({ { src = "https://github.com/tpope/vim-sleuth" } })
-vim.pack.add({ { src = "https://github.com/j-hui/fidget.nvim" } })
-require("fidget").setup({})
-
-vim.pack.add({ { src = "https://github.com/ChrisBrowne/terminal-toggle.nvim" } })
-require("terminal-toggle").setup()
-vim.keymap.set({ "n", "t" }, "<C-z>", "<cmd>TerminalToggle<CR>", { desc = "Terminal toggle" })
-
-vim.pack.add({ { src = "https://github.com/ibhagwan/fzf-lua" } })
-local fzflua = require("fzf-lua")
-fzflua.register_ui_select()
-fzflua.setup({
-  spell_suggest = {
-    actions = {
-      ["ctrl-y"] = fzflua.actions.complete,
-    },
-  },
-  files = {
-    actions = {
-      ["ctrl-y"] = fzflua.actions.file_edit_or_qf,
-    },
-  },
-})
-vim.keymap.set("n", "<leader>sf", "<cmd>FzfLua files<CR>", { desc = "[S]earch [F]iles" })
-vim.keymap.set("n", "<leader>sg", "<cmd>FzfLua live_grep<CR>", { desc = "[S]earch [G]rep" })
-vim.keymap.set("n", "<leader>gf", "<cmd>FzfLua files<CR>", { desc = "[G]it [F]iles" })
-vim.keymap.set("n", "<leader>sr", "<cmd>FzfLua resume<CR>", { desc = "[S]earch [R]esume" })
-vim.keymap.set("n", "<leader>ss", "<cmd>FzfLua spell_suggest<CR>", { desc = "[S]pell [S]uggest" })
-vim.keymap.set("n", "<leader><space>", "<cmd>FzfLua buffers<CR>", { desc = "Show buffers" })
-vim.keymap.set("n", "<leader>/", "<cmd>FzfLua blines<CR>", { desc = "Fuzzy find in buffer" })
-
 vim.pack.add({ { src = "https://github.com/saghen/blink.cmp" } })
-require("blink.cmp").setup({
-  completion = {
-    ghost_text = {
-      enabled = true,
-    },
-    list = {
-      selection = {
-        preselect = false,
-        auto_insert = false,
-      },
-    },
-    documentation = {
-      auto_show = true,
-      auto_show_delay_ms = 200,
-    },
-  },
-})
-
 vim.pack.add({ { src = "https://github.com/stevearc/conform.nvim" } })
-require("conform").setup({
-  formatters_by_ft = {
-    lua = { "stylua" },
-    go = { "gofmt" },
-    rust = { "rustfmt", lsp_format = "fallback" },
-    -- Conform will run the first available formatter
-    javascript = { "prettierd", "prettier", stop_after_first = true },
-    javascriptreact = { "prettierd", "prettier", stop_after_first = true },
-    typescriptreact = { "prettierd", "prettier", stop_after_first = true },
-    typescript = { "prettierd", "prettier", stop_after_first = true },
-    css = { "prettierd", "prettier" },
-    scss = { "prettierd", "prettier" },
-    markdown = { "prettierd", "prettier" },
-    html = { "prettierd", "prettier" },
-    json = { "prettierd", "prettier" },
-    yaml = { "prettierd", "prettier" },
-    graphql = { "prettierd", "prettier" },
-    md = { "prettierd", "prettier" },
-    txt = { "prettierd", "prettier" },
-  },
-  format_on_save = { timeout_ms = 1500, lsp_format = "never" },
-  formatters = {
-    stylua = {
-      args = { "--indent-width", "2", "--indent-type", "Spaces", "-" },
-    },
-  },
-})
-
+vim.pack.add({ { src = "https://github.com/j-hui/fidget.nvim" } })
+vim.pack.add({ { src = "https://github.com/ibhagwan/fzf-lua" } })
+vim.pack.add({ { src = "https://github.com/windwp/nvim-autopairs" } })
 vim.pack.add({ { src = "https://github.com/neovim/nvim-lspconfig" } })
-vim.pack.add({ { src = "https://github.com/RRethy/vim-illuminate" } })
 vim.pack.add({ { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "master" } })
+vim.pack.add({ { src = "https://github.com/ChrisBrowne/terminal-toggle.nvim" } })
+vim.pack.add({ { src = "https://github.com/folke/tokyonight.nvim" } })
+vim.pack.add({ { src = "https://github.com/tpope/vim-fugitive" } })
+vim.pack.add({ { src = "https://github.com/RRethy/vim-illuminate" } })
+vim.pack.add({ { src = "https://github.com/tpope/vim-sleuth" } })
+vim.pack.add({ { src = "https://github.com/tpope/vim-unimpaired" } })
+vim.pack.add({ { src = "https://github.com/tpope/vim-vinegar" } })
+
 require("nvim-treesitter.configs").setup({
   ensure_installed = {
     "c",
@@ -174,6 +98,7 @@ require("nvim-treesitter.configs").setup({
     "lua",
     "php",
     "rust",
+    "go",
     "yaml",
     "vim",
     "toml",
@@ -187,8 +112,8 @@ require("nvim-treesitter.configs").setup({
     keymaps = {
       init_selection = "<CR>", -- set to `false` to disable one of the mappings
       node_incremental = "<CR>",
-      scope_incremental = "<CR>",
-      node_decremental = "<Tab>",
+      scope_incremental = false,
+      node_decremental = "<BS>",
     },
   },
   indent = {
@@ -218,14 +143,80 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
 
     if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlineCompletion) then
-      -- print("this client supports inline text completion")
+      -- print("this client supports inline text completion, which is the case for copilot as that needs to complete multiline snippets")
       vim.lsp.inline_completion.enable(true)
-
-      vim.keymap.set("i", "<Tab>", function()
-        if not vim.lsp.inline_completion.get() then
-          return "<Tab>"
-        end
-      end)
     end
   end,
+})
+
+require("tokyonight").setup({
+  transparent = true,
+  styles = {
+    sidebars = "transparent",
+    floats = "transparent",
+  },
+})
+vim.cmd.colorscheme("tokyonight-night")
+
+require("fidget").setup({})
+
+require("terminal-toggle").setup()
+
+require("nvim-autopairs").setup()
+
+require("fzf-lua").register_ui_select()
+require("fzf-lua").setup({
+  defaults = {
+    keymap = {
+      fzf = {
+        ["ctrl-y"] = "accept",
+      },
+    },
+  },
+})
+
+require("blink.cmp").setup({
+  completion = {
+    ghost_text = {
+      enabled = true,
+    },
+    list = {
+      selection = {
+        preselect = false,
+        auto_insert = false,
+      },
+    },
+    documentation = {
+      auto_show = true,
+      auto_show_delay_ms = 200,
+    },
+  },
+})
+
+require("conform").setup({
+  formatters_by_ft = {
+    lua = { "stylua" },
+    go = { "gofmt" },
+    rust = { "rustfmt", lsp_format = "fallback" },
+    -- Conform will run the first available formatter
+    javascript = { "prettierd", "prettier", stop_after_first = true },
+    javascriptreact = { "prettierd", "prettier", stop_after_first = true },
+    typescriptreact = { "prettierd", "prettier", stop_after_first = true },
+    typescript = { "prettierd", "prettier", stop_after_first = true },
+    css = { "prettierd", "prettier" },
+    scss = { "prettierd", "prettier" },
+    markdown = { "prettierd", "prettier" },
+    html = { "prettierd", "prettier" },
+    json = { "prettierd", "prettier" },
+    yaml = { "prettierd", "prettier" },
+    graphql = { "prettierd", "prettier" },
+    md = { "prettierd", "prettier" },
+    txt = { "prettierd", "prettier" },
+  },
+  format_on_save = { timeout_ms = 1500, lsp_format = "never" },
+  formatters = {
+    stylua = {
+      args = { "--indent-width", "2", "--indent-type", "Spaces", "-" },
+    },
+  },
 })
