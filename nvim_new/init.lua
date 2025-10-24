@@ -25,8 +25,25 @@ vim.opt.foldtext = "v:lua.vim.treesitter.foldtext()"
 vim.g.netrw_liststyle = 1 -- Use the long listing view
 
 vim.diagnostic.config({
-  -- virtual_text = true,
   virtual_lines = { current_line = true },
+})
+
+vim.pack.add({
+  { src = "https://github.com/saghen/blink.cmp" },
+  { src = "https://github.com/stevearc/conform.nvim" },
+  { src = "https://github.com/j-hui/fidget.nvim" },
+  { src = "https://github.com/ibhagwan/fzf-lua" },
+  { src = "https://github.com/lewis6991/gitsigns.nvim" },
+  { src = "https://github.com/nvim-mini/mini.surround" },
+  { src = "https://github.com/windwp/nvim-autopairs" },
+  { src = "https://github.com/neovim/nvim-lspconfig" },
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "master" },
+  { src = "https://github.com/ChrisBrowne/terminal-toggle.nvim" },
+  { src = "https://github.com/folke/tokyonight.nvim" },
+  { src = "https://github.com/tpope/vim-fugitive" },
+  { src = "https://github.com/RRethy/vim-illuminate" },
+  { src = "https://github.com/tpope/vim-sleuth" },
+  { src = "https://github.com/tpope/vim-vinegar" },
 })
 
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
@@ -46,8 +63,17 @@ vim.keymap.set("i", "<Tab>", function()
     return "<Tab>"
   end
 end)
+
 -- https://neovim.io/doc/user/lsp.html#_global-defaults
 vim.keymap.set("n", "grd", vim.lsp.buf.definition, bufopts)
+
+vim.lsp.enable({
+  "ts_ls",
+  "copilot",
+  "tailwindcss",
+  "rust_analyzer",
+  "gopls",
+})
 
 local augroup = vim.api.nvim_create_augroup("chris.cfg", { clear = true })
 vim.api.nvim_create_autocmd("TextYankPost", {
@@ -58,21 +84,70 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   end,
 })
 
-vim.pack.add({ { src = "https://github.com/saghen/blink.cmp" } })
-vim.pack.add({ { src = "https://github.com/stevearc/conform.nvim" } })
-vim.pack.add({ { src = "https://github.com/j-hui/fidget.nvim" } })
-vim.pack.add({ { src = "https://github.com/ibhagwan/fzf-lua" } })
-vim.pack.add({ { src = "https://github.com/nvim-mini/mini.surround" } })
-vim.pack.add({ { src = "https://github.com/windwp/nvim-autopairs" } })
-vim.pack.add({ { src = "https://github.com/neovim/nvim-lspconfig" } })
-vim.pack.add({ { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "master" } })
-vim.pack.add({ { src = "https://github.com/ChrisBrowne/terminal-toggle.nvim" } })
-vim.pack.add({ { src = "https://github.com/folke/tokyonight.nvim" } })
-vim.pack.add({ { src = "https://github.com/tpope/vim-fugitive" } })
-vim.pack.add({ { src = "https://github.com/RRethy/vim-illuminate" } })
-vim.pack.add({ { src = "https://github.com/tpope/vim-sleuth" } })
-vim.pack.add({ { src = "https://github.com/tpope/vim-unimpaired" } })
-vim.pack.add({ { src = "https://github.com/tpope/vim-vinegar" } })
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = augroup,
+  callback = function(ev)
+    local client = assert(vim.lsp.get_client_by_id(ev.data.client_id))
+    local bufopts = { noremap = true, silent = true, buffer = ev.buf }
+    -- vim.keymap.set("i", "<C-k>", vim.lsp.completion.get, bufopts) -- open completion menu manually
+
+    -- https://github.com/neovim/neovim/blob/b2828af5b5aba044cd40594a519d2d9f5dbb69cb/runtime/lua/vim/lsp/protocol.lua?plain=1#L858
+    if client:supports_method(vim.lsp.protocol.Methods.textDocument_completion) then
+      -- print("this client supports text completion")
+      -- vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
+    end
+
+    if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlineCompletion) then
+      -- print("this client supports inline text completion, which is the case for copilot as that needs to complete multiline snippets")
+      vim.lsp.inline_completion.enable(true)
+    end
+  end,
+})
+
+require("gitsigns").setup({
+  on_attach = function(bufnr)
+    local gitsigns = require("gitsigns")
+
+    local function map(mode, l, r, opts)
+      opts = opts or {}
+      opts.buffer = bufnr
+      vim.keymap.set(mode, l, r, opts)
+    end
+
+    -- Navigation
+    map("n", "]c", function()
+      if vim.wo.diff then
+        vim.cmd.normal({ "]c", bang = true })
+      else
+        gitsigns.nav_hunk("next")
+      end
+    end)
+
+    map("n", "[c", function()
+      if vim.wo.diff then
+        vim.cmd.normal({ "[c", bang = true })
+      else
+        gitsigns.nav_hunk("prev")
+      end
+    end)
+
+    -- Actions
+    map("n", "<leader>hs", gitsigns.stage_hunk)
+    map("n", "<leader>hr", gitsigns.reset_hunk)
+
+    map("v", "<leader>hs", function()
+      gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+    end)
+
+    map("v", "<leader>hr", function()
+      gitsigns.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+    end)
+
+    map("n", "<leader>hS", gitsigns.stage_buffer)
+    map("n", "<leader>hR", gitsigns.reset_buffer)
+    map("n", "<leader>hp", gitsigns.preview_hunk)
+  end,
+})
 
 require("nvim-treesitter.configs").setup({
   ensure_installed = {
@@ -110,34 +185,6 @@ require("nvim-treesitter.configs").setup({
   },
 })
 
-vim.lsp.enable({
-  "ts_ls",
-  "copilot",
-  "tailwindcss",
-  "rust_analyzer",
-  "gopls",
-})
-
-vim.api.nvim_create_autocmd("LspAttach", {
-  group = augroup,
-  callback = function(ev)
-    local client = assert(vim.lsp.get_client_by_id(ev.data.client_id))
-    local bufopts = { noremap = true, silent = true, buffer = ev.buf }
-    -- vim.keymap.set("i", "<C-k>", vim.lsp.completion.get, bufopts) -- open completion menu manually
-
-    -- https://github.com/neovim/neovim/blob/b2828af5b5aba044cd40594a519d2d9f5dbb69cb/runtime/lua/vim/lsp/protocol.lua?plain=1#L858
-    if client:supports_method(vim.lsp.protocol.Methods.textDocument_completion) then
-      -- print("this client supports text completion")
-      -- vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
-    end
-
-    if client:supports_method(vim.lsp.protocol.Methods.textDocument_inlineCompletion) then
-      -- print("this client supports inline text completion, which is the case for copilot as that needs to complete multiline snippets")
-      vim.lsp.inline_completion.enable(true)
-    end
-  end,
-})
-
 require("tokyonight").setup({
   transparent = true,
   styles = {
@@ -167,6 +214,9 @@ require("fzf-lua").setup({
 })
 
 require("blink.cmp").setup({
+  -- go here /home/topher/.local/share/nvim/site/pack/core/opt/blink.cmp
+  -- and run `cargo build --release` to build the rust component
+  fuzzy = { implementation = "prefer_rust_with_warning" },
   completion = {
     ghost_text = {
       enabled = true,
