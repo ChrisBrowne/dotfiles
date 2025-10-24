@@ -29,24 +29,10 @@ vim.diagnostic.config({
   virtual_lines = { current_line = true },
 })
 
--- [[ Basic Keymaps ]]
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 vim.keymap.set("n", "<leader>pu", "<cmd>lua vim.pack.update()<CR>")
 vim.keymap.set("n", "<leader>e", "<cmd>lua vim.diagnostic.open_float()<CR>")
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
-
--- [[ LSP Keymaps ]]
--- https://neovim.io/doc/user/lsp.html#_global-defaults
--- "gra" is mapped in Normal and Visual mode to vim.lsp.buf.code_action()
--- "gri" is mapped in Normal mode to vim.lsp.buf.implementation()
--- "grn" is mapped in Normal mode to vim.lsp.buf.rename()
--- "grr" is mapped in Normal mode to vim.lsp.buf.references()
--- "grt" is mapped in Normal mode to vim.lsp.buf.type_definition()
--- "gO" is mapped in Normal mode to vim.lsp.buf.document_symbol()
--- CTRL-S is mapped in Insert mode to vim.lsp.buf.signature_help()
--- "an" and "in" are mapped in Visual mode to outer and inner incremental selections
-vim.keymap.set("n", "grd", vim.lsp.buf.definition, bufopts)
-
 vim.keymap.set("n", "<leader>sf", "<cmd>FzfLua files<CR>", { desc = "[S]earch [F]iles" })
 vim.keymap.set("n", "<leader>sg", "<cmd>FzfLua live_grep<CR>", { desc = "[S]earch [G]rep" })
 vim.keymap.set("n", "<leader>gf", "<cmd>FzfLua files<CR>", { desc = "[G]it [F]iles" })
@@ -54,12 +40,14 @@ vim.keymap.set("n", "<leader>sr", "<cmd>FzfLua resume<CR>", { desc = "[S]earch [
 vim.keymap.set("n", "<leader>ss", "<cmd>FzfLua spell_suggest<CR>", { desc = "[S]pell [S]uggest" })
 vim.keymap.set("n", "<leader><space>", "<cmd>FzfLua buffers<CR>", { desc = "Show buffers" })
 vim.keymap.set("n", "<leader>/", "<cmd>FzfLua blines<CR>", { desc = "Fuzzy find in buffer" })
+vim.keymap.set({ "n", "t" }, "<C-z>", "<cmd>TerminalToggle<CR>", { desc = "Terminal toggle" })
 vim.keymap.set("i", "<Tab>", function()
   if not vim.lsp.inline_completion.get() then
     return "<Tab>"
   end
 end)
-vim.keymap.set({ "n", "t" }, "<C-z>", "<cmd>TerminalToggle<CR>", { desc = "Terminal toggle" })
+-- https://neovim.io/doc/user/lsp.html#_global-defaults
+vim.keymap.set("n", "grd", vim.lsp.buf.definition, bufopts)
 
 local augroup = vim.api.nvim_create_augroup("chris.cfg", { clear = true })
 vim.api.nvim_create_autocmd("TextYankPost", {
@@ -74,6 +62,7 @@ vim.pack.add({ { src = "https://github.com/saghen/blink.cmp" } })
 vim.pack.add({ { src = "https://github.com/stevearc/conform.nvim" } })
 vim.pack.add({ { src = "https://github.com/j-hui/fidget.nvim" } })
 vim.pack.add({ { src = "https://github.com/ibhagwan/fzf-lua" } })
+vim.pack.add({ { src = "https://github.com/nvim-mini/mini.surround" } })
 vim.pack.add({ { src = "https://github.com/windwp/nvim-autopairs" } })
 vim.pack.add({ { src = "https://github.com/neovim/nvim-lspconfig" } })
 vim.pack.add({ { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "master" } })
@@ -161,6 +150,8 @@ vim.cmd.colorscheme("tokyonight-night")
 require("fidget").setup({})
 
 require("terminal-toggle").setup()
+
+require("mini.surround").setup()
 
 require("nvim-autopairs").setup()
 
