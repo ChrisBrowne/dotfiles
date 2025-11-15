@@ -54,6 +54,8 @@ vim.keymap.set("n", "<leader>sf", "<cmd>FzfLua files<CR>", { desc = "[S]earch [F
 vim.keymap.set("n", "<leader>sg", "<cmd>FzfLua live_grep<CR>", { desc = "[S]earch [G]rep" })
 vim.keymap.set("n", "<leader>gf", "<cmd>FzfLua files<CR>", { desc = "[G]it [F]iles" })
 vim.keymap.set("n", "<leader>sr", "<cmd>FzfLua resume<CR>", { desc = "[S]earch [R]esume" })
+vim.keymap.set("n", "<leader>sw", "<cmd>FzfLua grep_cword<CR>", { desc = "[S]earch [W]ord" })
+vim.keymap.set("n", "<leader>s.", "<cmd>FzfLua oldfiles<CR>", { desc = "[S]earch Old files" })
 vim.keymap.set("n", "<leader>ss", "<cmd>FzfLua spell_suggest<CR>", { desc = "[S]pell [S]uggest" })
 vim.keymap.set("n", "<leader><space>", "<cmd>FzfLua buffers<CR>", { desc = "Show buffers" })
 vim.keymap.set("n", "<leader>/", "<cmd>FzfLua blines<CR>", { desc = "Fuzzy find in buffer" })
@@ -65,7 +67,7 @@ vim.keymap.set("i", "<Tab>", function()
 end)
 
 -- https://neovim.io/doc/user/lsp.html#_global-defaults
-vim.keymap.set("n", "grd", vim.lsp.buf.definition, bufopts)
+vim.keymap.set("n", "grd", "<Cmd>lua vim.lsp.buf.definition()<CR>zz", bufopts)
 
 vim.lsp.enable({
   "ts_ls",
