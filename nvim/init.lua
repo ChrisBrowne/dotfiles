@@ -216,8 +216,7 @@ require("fzf-lua").setup({
 })
 
 require("blink.cmp").setup({
-  -- go here /home/topher/.local/share/nvim/site/pack/core/opt/blink.cmp
-  -- and run `cargo build --release` to build the rust component
+  -- cd ~/.local/share/nvim/site/pack/core/opt/blink.cmp && cargo build --release
   fuzzy = { implementation = "rust" },
   completion = {
     ghost_text = {
