@@ -23,3 +23,5 @@ if [ -f /usr/share/git-core/contrib/completion/git-prompt.sh ]; then
 fi
 
 alias "..=cd .."
+alias "rdpphoton=xfreerdp /v:photon.brownehq /u:chris /d:. /network:auto /audio-mode:0 /gfx:avc444 /size:3840x2160 /scale:180 /dynamic-resolution"
+alias "rdpandromeda=xfreerdp /v:andromeda.brownehq /u:localsvc /d:. /network:auto /audio-mode:0 /gfx:avc444 /size:3840x2160 /scale:180 /dynamic-resolution"
