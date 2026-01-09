@@ -10,5 +10,7 @@ if [ -f /usr/share/git-core/contrib/completion/git-prompt.sh ]; then
     # \u@\h     = user@host
     # \[e[0m\]  = Reset color (so the rest is normal)
     # \W        = Current directory
-    export PS1='[\[\e[32m\]\u@\h\[\e[0m\] \W$(__git_ps1 " (%s)")]\$ '
+    export PS1='[\[\e[32m\]\u@\h\[\e[0m\] \[\e[34m\]\W\[\e[0m\]$(__git_ps1 " (%s)")]\$ '
 fi
+
+alias "..=cd .."
