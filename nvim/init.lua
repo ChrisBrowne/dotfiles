@@ -189,6 +189,7 @@ require("nvim-treesitter.configs").setup({
 
 require("tokyonight").setup({
   transparent = true,
+  terminal_colors = false,
   styles = {
     sidebars = "transparent",
     floats = "transparent",
