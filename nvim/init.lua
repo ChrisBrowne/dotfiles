@@ -211,6 +211,7 @@ require("fzf-lua").setup({
     keymap = {
       fzf = {
         ["ctrl-y"] = "accept",
+        ["ctrl-q"] = "select-all+accept", -- send all results to qf list
       },
     },
   },
