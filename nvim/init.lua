@@ -75,6 +75,7 @@ vim.lsp.enable({
   "tailwindcss",
   "rust_analyzer",
   "gopls",
+  "ty",
 })
 
 local augroup = vim.api.nvim_create_augroup("chris.cfg", { clear = true })
