@@ -1,3 +1,36 @@
+function moon() {
+  REF_DATE="Jan 15 2023"
+  REF_PERCENT=75
+  SEC_PER_DAY=86400
+  SYNODIC_SECONDS=2551443
+  REF_EPOCH=`date --date "$REF_DATE" +%s`
+  NOW_EPOCH=`date +%s`
+  NOW_DISPLAY=`date "+%b %d %Y"`
+  SEC_DIFF=$(($NOW_EPOCH - $REF_EPOCH))
+  CENTI_MOONS=$((100 * $SEC_DIFF / $SYNODIC_SECONDS))
+  MOON_PERCENT=$((($CENTI_MOONS + $REF_PERCENT) % 100))
+
+  if [[ $MOON_PERCENT -lt 7 ]]; then
+    echo "🌑"
+  elif [[ $MOON_PERCENT -lt 19 ]]; then
+    echo "🌒"
+  elif [[ $MOON_PERCENT -lt 32 ]]; then
+    echo "🌓"
+  elif [[ $MOON_PERCENT -lt 44 ]]; then
+    echo "🌔"
+  elif [[ $MOON_PERCENT -lt 57 ]]; then
+    echo "🌕"
+  elif [[ $MOON_PERCENT -lt 69 ]]; then
+    echo "🌖"
+  elif [[ $MOON_PERCENT -lt 82 ]]; then
+    echo "🌗"
+  elif [[ $MOON_PERCENT -lt 94 ]]; then
+    echo "🌘"
+  else
+    echo "🌑"
+  fi
+}
+CURRENT_MOON_PHASE=$(moon)
 
 __prompt_status_line() {
     local EXIT="$?"
@@ -19,8 +52,10 @@ if [ -f /usr/share/git-core/contrib/completion/git-prompt.sh ]; then
     export GIT_PS1_SHOWUPSTREAM="auto"
     export GIT_PS1_SHOWCOLORHINTS=true
 
-    export PS1='[\[\e[32m\]\u@\h\[\e[0m\] \[\e[34m\]\w\[\e[0m\]$(__git_ps1 " (%s)")]\[$(__prompt_status_line)\]\n\[\e[32m\]❯\[\e[m\] '
+    export PS1='[\[\e[32m\]\u@\h\[\e[0m\] \[\e[34m\]\w\[\e[0m\]$(__git_ps1 " (%s)")]\[$(__prompt_status_line)\] $CURRENT_MOON_PHASE \n\[\e[32m\]❯\[\e[m\] '
 fi
+
+export YDOTOOL_SOCKET=/tmp/.ydotool_socket
 
 alias "..=cd .."
 alias "...=cd ../.."
