@@ -47,12 +47,15 @@ vim.pack.add({
 })
 
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
+vim.keymap.set("n", "*", "*zz")
+vim.keymap.set("n", "n", "nzz")
+vim.keymap.set("n", "N", "Nzz")
 vim.keymap.set("n", "<leader>pu", "<cmd>lua vim.pack.update()<CR>")
 vim.keymap.set("n", "<leader>e", "<cmd>lua vim.diagnostic.open_float()<CR>")
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 vim.keymap.set("n", "<leader>sf", "<cmd>FzfLua files<CR>", { desc = "[S]earch [F]iles" })
 vim.keymap.set("n", "<leader>sg", "<cmd>FzfLua live_grep<CR>", { desc = "[S]earch [G]rep" })
-vim.keymap.set("n", "<leader>gf", "<cmd>FzfLua files<CR>", { desc = "[G]it [F]iles" })
+vim.keymap.set("n", "<leader>gf", "<cmd>FzfLua git_files<CR>", { desc = "[G]it [F]iles" })
 vim.keymap.set("n", "<leader>sr", "<cmd>FzfLua resume<CR>", { desc = "[S]earch [R]esume" })
 vim.keymap.set("n", "<leader>sw", "<cmd>FzfLua grep_cword<CR>", { desc = "[S]earch [W]ord" })
 vim.keymap.set("n", "<leader>s.", "<cmd>FzfLua oldfiles<CR>", { desc = "[S]earch Old files" })
@@ -65,6 +68,13 @@ vim.keymap.set("i", "<Tab>", function()
     return "<Tab>"
   end
 end)
+-- Copy filename:line_number to clipboard
+vim.keymap.set("n", "<leader>cf", function()
+  local path = vim.fn.expand("%")
+  local line = vim.fn.line(".")
+  vim.fn.setreg("+", path .. ":" .. line)
+  print("Copied to clipboard: " .. path .. ":" .. line)
+end, { desc = "Copy current file path and line" })
 
 -- https://neovim.io/doc/user/lsp.html#_global-defaults
 vim.keymap.set("n", "grd", "<Cmd>lua vim.lsp.buf.definition()<CR>zz", bufopts)
