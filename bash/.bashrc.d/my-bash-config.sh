@@ -57,6 +57,24 @@ fi
 
 export YDOTOOL_SOCKET=/tmp/.ydotool_socket
 
+# Increase history capacity (Standard is usually 1000)
+export HISTSIZE=10000
+export HISTFILESIZE=20000
+
+# Don't log duplicate lines or lines starting with a space
+export HISTCONTROL=ignoreboth
+
+# Append to history immediately after each command (Instant History)
+# and ensure multiple sessions don't overwrite each other
+shopt -s histappend
+export PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+
+# Set timestamp format (YYYY-MM-DD HH:MM:SS)
+export HISTTIMEFORMAT="%F %T "
+
+# Ignore common/unhelpful commands from history
+export HISTIGNORE="history:exit"
+
 alias "..=cd .."
 alias "...=cd ../.."
 alias "rdpphoton=xfreerdp /v:photon.brownehq /u:chris /d:. /network:auto /audio-mode:0 /gfx:avc444 /size:3840x2160 /scale:180 /dynamic-resolution"
