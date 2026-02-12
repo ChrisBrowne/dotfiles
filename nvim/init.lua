@@ -11,7 +11,7 @@ vim.opt.smartcase = true
 vim.opt.signcolumn = "yes"
 vim.opt.updatetime = 250
 vim.opt.tabstop = 4
-vim.opt.timeoutlen = 300
+vim.opt.timeoutlen = 400
 vim.opt.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.opt.inccommand = "split"
@@ -44,18 +44,22 @@ vim.pack.add({
   { src = "https://github.com/RRethy/vim-illuminate" },
   { src = "https://github.com/tpope/vim-sleuth" },
   { src = "https://github.com/tpope/vim-vinegar" },
+  { src = "https://github.com/mfussenegger/nvim-jdtls" },
 })
 
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
-vim.keymap.set("n", "*", "*zz")
+vim.keymap.set("n", "*", "*Nzz")
 vim.keymap.set("n", "n", "nzz")
 vim.keymap.set("n", "N", "Nzz")
+vim.keymap.set("n", "<C-d>", "<C-d>zz")
+vim.keymap.set("n", "<C-u>", "<C-u>zz")
 vim.keymap.set("n", "<leader>pu", "<cmd>lua vim.pack.update()<CR>")
 vim.keymap.set("n", "<leader>e", "<cmd>lua vim.diagnostic.open_float()<CR>")
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 vim.keymap.set("n", "<leader>sf", "<cmd>FzfLua files<CR>", { desc = "[S]earch [F]iles" })
 vim.keymap.set("n", "<leader>sg", "<cmd>FzfLua live_grep<CR>", { desc = "[S]earch [G]rep" })
 vim.keymap.set("n", "<leader>gf", "<cmd>FzfLua git_files<CR>", { desc = "[G]it [F]iles" })
+vim.keymap.set("n", "<leader>gb", "<cmd>FzfLua git_branches<CR>", { desc = "[G]it [B]ranches" })
 vim.keymap.set("n", "<leader>sr", "<cmd>FzfLua resume<CR>", { desc = "[S]earch [R]esume" })
 vim.keymap.set("n", "<leader>sw", "<cmd>FzfLua grep_cword<CR>", { desc = "[S]earch [W]ord" })
 vim.keymap.set("n", "<leader>s.", "<cmd>FzfLua oldfiles<CR>", { desc = "[S]earch Old files" })
@@ -79,13 +83,20 @@ end, { desc = "Copy current file path and line" })
 -- https://neovim.io/doc/user/lsp.html#_global-defaults
 vim.keymap.set("n", "grd", "<Cmd>lua vim.lsp.buf.definition()<CR>zz", bufopts)
 
+-- vim.lsp.config.jdtls.root_markers = { "pom.xml" }
+
+vim.lsp.config("jdtls", {
+  root_dir = vim.fs.root(0, { "pom.xml", "gradlew", ".git", "mvnw" }),
+})
+
 vim.lsp.enable({
   "ts_ls",
-  "copilot",
+  -- "copilot",
   "tailwindcss",
   "rust_analyzer",
   "gopls",
   "ty",
+  "jdtls",
 })
 
 local augroup = vim.api.nvim_create_augroup("chris.cfg", { clear = true })
@@ -170,6 +181,7 @@ require("nvim-treesitter.configs").setup({
     "typescript",
     "lua",
     "html",
+    "java",
     "javascript",
     "json",
     "lua",
