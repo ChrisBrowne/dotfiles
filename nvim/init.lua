@@ -66,6 +66,7 @@ vim.keymap.set("n", "<leader>s.", "<cmd>FzfLua oldfiles<CR>", { desc = "[S]earch
 vim.keymap.set("n", "<leader>ss", "<cmd>FzfLua spell_suggest<CR>", { desc = "[S]pell [S]uggest" })
 vim.keymap.set("n", "<leader><space>", "<cmd>FzfLua buffers<CR>", { desc = "Show buffers" })
 vim.keymap.set("n", "<leader>/", "<cmd>FzfLua blines<CR>", { desc = "Fuzzy find in buffer" })
+vim.keymap.set("n", "<leader>gl", ":G log --graph --oneline --decorate --all<CR>", { noremap = true, silent = true })
 vim.keymap.set({ "n", "t" }, "<C-z>", "<cmd>TerminalToggle<CR>", { desc = "Terminal toggle" })
 vim.keymap.set("i", "<Tab>", function()
   if not vim.lsp.inline_completion.get() then
@@ -79,6 +80,16 @@ vim.keymap.set("n", "<leader>cf", function()
   vim.fn.setreg("+", path .. ":" .. line)
   print("Copied to clipboard: " .. path .. ":" .. line)
 end, { desc = "Copy current file path and line" })
+
+-- Jump to next conflict marker (also could just use tpope vim-unimpaired)
+vim.keymap.set("n", "]n", function()
+  vim.cmd("/^\\(<\\|=\\|>\\)\\{7\\}")
+end, { desc = "Next Git Conflict" })
+
+-- Jump to previous conflict marker
+vim.keymap.set("n", "[n", function()
+  vim.cmd("?^\\(<\\|=\\|>\\)\\{7\\}")
+end, { desc = "Prev Git Conflict" })
 
 -- https://neovim.io/doc/user/lsp.html#_global-defaults
 vim.keymap.set("n", "grd", "<Cmd>lua vim.lsp.buf.definition()<CR>zz", bufopts)
