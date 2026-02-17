@@ -32,19 +32,6 @@ function moon() {
 }
 CURRENT_MOON_PHASE=$(moon)
 
-__prompt_status_line() {
-    local EXIT="$?"
-    local RED="\001\e[31m\002"
-    local GREEN="\001\e[32m\002"
-    local RESET="\001\e[0m\002"
-
-    if [ $EXIT -eq 0 ]; then
-        echo -ne " ${GREEN}${EXIT}${RESET}"
-    else
-        echo -ne " ${RED}${EXIT}${RESET}"
-    fi
-}
-
 if [ -f /usr/share/git-core/contrib/completion/git-prompt.sh ]; then
     . /usr/share/git-core/contrib/completion/git-prompt.sh
     export GIT_PS1_SHOWDIRTYSTATE=true
@@ -52,7 +39,7 @@ if [ -f /usr/share/git-core/contrib/completion/git-prompt.sh ]; then
     export GIT_PS1_SHOWUPSTREAM="auto"
     export GIT_PS1_SHOWCOLORHINTS=true
 
-    export PS1='[\[\e[32m\]\u@\h\[\e[0m\] \[\e[34m\]\w\[\e[0m\]$(__git_ps1 " (%s)")]\[$(__prompt_status_line)\] $CURRENT_MOON_PHASE \n\[\e[32m\]❯\[\e[m\] '
+    export PS1='[\[\e[32m\]\u@\h\[\e[0m\] \[\e[34m\]\w\[\e[0m\]$(__git_ps1 " (%s)")] $CURRENT_MOON_PHASE $(code=$?; if [ $code -ne 0 ]; then echo -e "\033[31m $code\033[0m "; fi) \n\[\e[32m\]❯\[\e[m\] '
 fi
 
 export YDOTOOL_SOCKET=/tmp/.ydotool_socket
@@ -82,4 +69,6 @@ alias "rdpandromeda=xfreerdp /v:andromeda.brownehq /u:localsvc /d:. /network:aut
 alias "wakephoton=sudo ether-wake E8:6A:64:57:E1:A5"
 alias "wakeandromeda=sudo ether-wake 94:18:82:37:DB:15"
 alias l='ls -lah'
+
+alias gor='cd ~/dev/juxt/rorschach/'
 
