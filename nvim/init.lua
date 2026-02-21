@@ -48,6 +48,10 @@ vim.pack.add({
 })
 
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
+-- Move down by visual line unless a count is given
+vim.keymap.set({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+-- Move up by visual line unless a count is given
+vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set("n", "*", "*Nzz")
 vim.keymap.set("n", "n", "nzz")
 vim.keymap.set("n", "N", "Nzz")

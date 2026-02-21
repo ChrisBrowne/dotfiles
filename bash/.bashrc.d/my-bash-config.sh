@@ -70,5 +70,6 @@ alias "wakephoton=sudo ether-wake E8:6A:64:57:E1:A5"
 alias "wakeandromeda=sudo ether-wake 94:18:82:37:DB:15"
 alias l='ls -lah'
 
-alias gor='cd ~/dev/juxt/rorschach/'
+alias gor='cd ~/dev/juxt/rorschach'
+alias gom='cd ~/dev/juxt/meridian'
 
