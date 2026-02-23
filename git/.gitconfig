@@ -1,0 +1,10 @@
+[user]
+    # populated from gitconfig.local
+[include]
+    path = ~/.gitconfig.local
+[init]
+	defaultBranch = main
+[alias]
+    # "repair-worktree" or whatever name you like
+    rewt = !git config remote.origin.fetch \"+refs/heads/*:refs/remotes/origin/*\" && git fetch origin
+
