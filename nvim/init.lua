@@ -12,6 +12,7 @@ vim.opt.signcolumn = "yes"
 vim.opt.updatetime = 250
 vim.opt.tabstop = 4
 vim.opt.timeoutlen = 400
+vim.opt.linebreak = true
 vim.opt.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.opt.inccommand = "split"
@@ -45,6 +46,28 @@ vim.pack.add({
   { src = "https://github.com/tpope/vim-sleuth" },
   { src = "https://github.com/tpope/vim-vinegar" },
   { src = "https://github.com/mfussenegger/nvim-jdtls" },
+  { src = "https://github.com/juxt/nvim-allium" },
+})
+
+require("allium").setup({
+  -- lsp = {
+  --   cmd = { "allium-lsp", "--stdio" }, -- LSP server command
+  --   filetypes = { "allium" },
+  --   root_markers = { "allium.config.json", ".git" }, -- 0.11+ native LSP
+  --   settings = {},
+  -- },
+  -- keymaps = {
+  --   enabled = true, -- set false to handle your own mappings
+  --   definition = "gd",
+  --   hover = "K",
+  --   references = "gr",
+  --   rename = "<leader>rn",
+  --   code_action = "<leader>ca",
+  --   format = "<leader>f",
+  --   prev_diagnostic = "[d",
+  --   next_diagnostic = "]d",
+  --   loclist = "<leader>q",
+  -- },
 })
 
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
@@ -77,6 +100,7 @@ vim.keymap.set("i", "<Tab>", function()
     return "<Tab>"
   end
 end)
+
 -- Copy filename:line_number to clipboard
 vim.keymap.set("n", "<leader>cf", function()
   local path = vim.fn.expand("%")
@@ -112,6 +136,7 @@ vim.lsp.enable({
   "gopls",
   "ty",
   "jdtls",
+  "kotlin_lsp",
 })
 
 local augroup = vim.api.nvim_create_augroup("chris.cfg", { clear = true })
@@ -144,6 +169,23 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 
 require("gitsigns").setup({
+  signs = {
+    add = { text = "┃" },
+    change = { text = "┃" },
+    delete = { text = "_" },
+    topdelete = { text = "‾" },
+    changedelete = { text = "~" },
+    untracked = { text = "┆" },
+  },
+  signs_staged = {
+    add = { text = "┃" },
+    change = { text = "┃" },
+    delete = { text = "_" },
+    topdelete = { text = "‾" },
+    changedelete = { text = "~" },
+    untracked = { text = "┆" },
+  },
+  signs_staged_enable = true,
   on_attach = function(bufnr)
     local gitsigns = require("gitsigns")
 
@@ -199,6 +241,7 @@ require("nvim-treesitter.configs").setup({
     "java",
     "javascript",
     "json",
+    "kotlin",
     "lua",
     "php",
     "rust",
@@ -294,6 +337,7 @@ require("conform").setup({
     graphql = { "prettierd", "prettier" },
     md = { "prettierd", "prettier" },
     txt = { "prettierd", "prettier" },
+    kotlin = { "ktlint" },
   },
   format_on_save = { timeout_ms = 1500, lsp_format = "never" },
   formatters = {
