@@ -72,4 +72,5 @@ alias l='ls -lah'
 
 alias gor='cd ~/dev/juxt/rorschach'
 alias gom='cd ~/dev/juxt/meridian'
+alias gom='cd ~/dev/juxt/keybase/accounts/clients/nomura'
 
