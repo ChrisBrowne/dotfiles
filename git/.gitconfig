@@ -8,3 +8,5 @@
     # "repair-worktree" or whatever name you like
     rewt = !git config remote.origin.fetch \"+refs/heads/*:refs/remotes/origin/*\" && git fetch origin
 
+[pull]
+	rebase = true
